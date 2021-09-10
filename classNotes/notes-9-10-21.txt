@@ -1,0 +1,62 @@
+
+~~~~~~~~~~~~~~~~~~~~~~ Hoare Triple ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{p} S {q}
+
+where p is the precondition and q is the postcondition. S is a statement
+
+it is ok to stregthen the precondition and weaken the postcondition, and S 
+should still work. 
+
+for exmaple
+
+{x > 2} x++ {x > 3}
+
+stregthen the precondition, weaken the postcondition
+
+{x == 3} x++ {x > 2}
+
+can chain to gether like so 
+
+{x == 3} x++ {x > 2} s2 {} s3 {}
+
+
+~~~~~~~~~~~~~~~~~~~~~~~ Weakest precondition Calculas ~~~~~~~~~~~~~~~~~~~
+
+weakest precondition
+
+wp (x := i, i++, x < i)
+
+given the postcondition and the statement, what is the weakest precondition 
+possible that guarentees the postcondition
+
+wp (x := i, i++, x < i)      x := i
+
+
+ x := i ==> wp (i++, x < i) ==> i++ ==> wp (x < 1)
+        <==    x < i + 1    <==     <== x < i 
+
+ going backwards
+
+ wp (i < i + 1) --> true
+
+ exmaple1 :
+
+wp (x := y , assert (x > 0), x < 20)
+
+x := y ==> wp (assert(x > 0), x < 20) ==> assert(x > 0) ==> wp (x < 20) ==> x < 20
+       <==       x > 0 AND x < 20     <==               <==    x < 20        
+
+wp (0 < y < 20)
+
+
+Rules 
+* wp ({}, R) = R
+* wp (x := e, R) = R[e/x] i.e. e replaces x
+* wp (assert X, R) = X AND R
+* wp (S1; S2, R) = wp (S1, wp(S2, R))
+* wp  (if c then S1 else s2; R) = 
+[c AND wp(S1, R)] || [c! AND wp(s2, R)]
+
+exmaple
+
