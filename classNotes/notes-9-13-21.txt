@@ -1,0 +1,34 @@
+wp({}, R ) = R 
+wp(x:=e, R ) = R[e/x ] ** replace x with e every where there is an x 
+wp(assert e, R ) = e AND R 
+wp(s0: s1, T) = wp(s0, wp(s1, R ))
+wp(if e, s1, s2, R) = 
+    [e AND wp(s1, R)] OR
+    [!e AND wp(s2, R)]
+
+
+r := x                      // 1
+if (r < 0){
+    r := -r                 // 4
+}                           // 2
+r := r + 1                  // 3
+
+ensures r > 0 AND r > x
+
+
+                                wp(1:2:3, 0)
+                                r := x 
+                                wp(2:3, 0)
+if statement ---- > wp(4, ?)       <->      wp(3, 0)    <----after if statement
+    wp(i, 1)        r := -r (3)                r := r + 1
+    i (2)                                      wp({}, 0)   <----end and add to list going up
+
+
+list going up
+0) r > 0 AND r > x 
+1) r + 1 > 0 AND r + 1 > x
+2) r >= 0 AND r + 1 > 0 AND r + 1 > x 
+3) r < 0 AND -r + 1 > 0 AND -r + 1 > x 
+4) 2 OR 3
+5) [x >= 0 AND x + 1 > 0 AND x + 1 > x] OR
+    [x < 0 AND -x + 1 > 0 AND -x + 1 > x]
